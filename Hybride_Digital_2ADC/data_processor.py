@@ -108,7 +108,10 @@ class DataProcessor(QThread):
             return True, final_data
 
         except (IndexError, ValueError, struct.error) as e:
+            # [核心修改] 在错误信息中加入导致错误的原始数据帧
+            error_frame_hex = ' '.join(f'{b:02X}' for b in frame_buffer)
             self.debug_message.emit(f"[协议错误] {e}")
+            self.debug_message.emit(f"--> 原始数据帧: {error_frame_hex}")
             return False, None
 
     # --- run() 循环完全不变 ---
